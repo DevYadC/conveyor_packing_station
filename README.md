@@ -49,3 +49,12 @@ This project implements the PLC (Programmable Logic Controller) logic for a conv
 
 4. **System Stop**: Pressing the stop button (I:0/1) resets the `system running` bit (B3:3/2), stopping all operations immediately.
 
+**Screenshots**:
+![image](https://github.com/user-attachments/assets/e711f208-4a84-475b-a320-375920d1ff3e)
+![image](https://github.com/user-attachments/assets/37ffb1d0-c333-4fcc-8a24-6af5811d8ea7)
+![image](https://github.com/user-attachments/assets/733ec3d6-87ca-4756-b57f-3231ca1b0dc2)
+![image](https://github.com/user-attachments/assets/3772ef4a-ab7c-4e78-b1cd-4b18ba469982)
+
+
+
+
