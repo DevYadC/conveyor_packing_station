@@ -1,96 +1,51 @@
-# Conveyor Belt and Hopper Control System
+Based on the ladder diagrams you've provided, I can help you create a README for a conveyor nut packing station. Here's a draft README file:
+
+---
+
+# Conveyor Nut Packing Station - PLC Logic
 
 ## Overview
-
-This RSLogix 500 project controls a conveyor belt and hopper system to automatically fill boxes with either pecans or walnuts based on the color label on the box. Red labels correspond to pecans, while blue labels correspond to walnuts.
+This project implements the PLC (Programmable Logic Controller) logic for a conveyor nut packing station. The station automates the process of sorting and packing nuts using various sensors and actuators. The ladder logic is designed to control the start/stop functions, manage sensors for nut detection, and control the conveyor and hopper mechanisms for sorting and packing different types of nuts.
 
 ## System Components
 
-- **Conveyor Belt**: Transports boxes to the filling station.
-- **Hopper 1**: Dispenses pecans.
-- **Hopper 2**: Dispenses walnuts.
-- **Color Sensor**: Detects the color label on the boxes (red for pecans, blue for walnuts).
-- **PLC**: Allen-Bradley MicroLogix 1100 Series B.
+### Inputs
+- **Start Button (I:0/0)**: Initiates the system operation.
+- **Stop Button (I:0/1)**: Stops the system operation.
+- **Proximity Sensor (I:0/2)**: Detects the presence of an object on the conveyor.
+- **Level Sensor (I:0/3)**: Monitors the level of nuts in the hopper.
+- **Red Sensor (I:0/4)**: Detects red-colored nuts.
+- **Blue Sensor (I:0/5)**: Detects blue-colored nuts.
 
-## Ladder Logic Description
+### Outputs
+- **Conveyor Motor Output (O:0/0)**: Controls the conveyor belt movement.
+- **Walnut Hopper Output (O:0/1)**: Activates the walnut hopper for dispensing walnuts.
+- **Pecan Hopper Output (O:0/2)**: Activates the pecan hopper for dispensing pecans.
 
-The ladder logic program for this project includes the following main components:
+### Internal Bits
+- **B3:0/0 to B3:0/7**: Internal bits used to manage system states, such as proximity detection, level detection, and sensor status.
+- **B3:1/0 to B3:1/7**: Internal bits used for system control logic, including conveyor and hopper operation.
 
-### I/O Configuration
+## Ladder Logic Breakdown
 
-- **Inputs**:
-  - `I:0/0`: Proximity sensor input
-  - `I:0/1`: Level sensor input
-  - `I:0/2`: Red color sensor input
-  - `I:0/3`: Blue color sensor input
-  - `I:0/4`: Start button
-- **Outputs**:
-  - `O:0/0`: Conveyor motor output
-  - `O:0/1`: Walnut hopper output
-  - `O:0/2`: Pecan hopper output
+### Ladder 2 - Main Program
+- **Rung 0000**: Initializes the system by jumping to the `IO` and `Controls` subroutines.
 
-### Binary Data Bits
+### Ladder 3 - IO Handling
+- **Rungs 0000-0005**: Manage input signals from start/stop buttons and various sensors.
+- **Rungs 0006-0008**: Control outputs for the conveyor motor and hoppers based on the system's running status and sensor inputs.
 
-- `B3:0/0`: Proximity bit
-- `B3:0/1`: Level bit
-- `B3:0/2`: Red sensor bit
-- `B3:0/3`: Blue sensor bit
-- `B3:0/4`: Conveyor bit
-- `B3:0/5`: Walnut hopper bit
-- `B3:0/6`: Pecan hopper bit
-- `B3:0/7`: One-shot rising (ONS)
+### Ladder 4 - Control Logic
+- **Rungs 0000-0002**: Implement system start/stop logic using one-shot rising (ONS) instructions for debouncing.
+- **Rungs 0003-0011**: Handle the logic for conveyor and hopper operations, triggered by sensor inputs and internal bits.
 
-### Integer Data Files
+## How It Works
 
-- `N7:0`: Conveyor state (0 = stopped, 1 = moving)
-- `N7:1`: Hopper state (0 = off, 1 = pack pecan, 2 = pack walnut)
+1. **System Start**: Pressing the start button (I:0/0) sets the `system running` bit (B3:3/2), which allows the conveyor and other operations to begin.
+   
+2. **Object Detection**: The proximity sensor (I:0/2) detects the presence of a nut on the conveyor, which triggers the corresponding logic to activate the appropriate hopper based on sensor inputs.
+   
+3. **Nut Sorting**: Depending on the nut color detected by the red (I:0/4) and blue (I:0/5) sensors, the appropriate hopper (walnut or pecan) is activated to dispense nuts into the correct packaging.
 
-### Ladder Logic
-
-1. **Rung 0**: Start/Stop Control
-    - Controls the conveyor motor based on the start button.
-
-2. **Rung 1**: Box Detection
-    - Stops the conveyor when a box is detected.
-
-3. **Rung 2**: Color Detection and Filling
-    - Activates the appropriate hopper based on the detected color.
-
-4. **Rung 3**: Restart Conveyor
-    - Restarts the conveyor after the box is filled.
-
-### Program Files
-
-- `LAD 2`: Main routine calling subroutines
-- `LAD 3`: IO handling
-- `LAD 4`: State handling
-- `LAD 5`: Control logic
-
-## How to Use
-
-1. **Setup the Hardware**:
-   - Connect the conveyor belt motor, hopper solenoids, and sensors to the appropriate PLC input/output terminals as described above.
-   - Ensure that the color sensor is correctly positioned to read the labels on the boxes as they arrive at the filling station.
-
-2. **Load the RSLogix 500 Program**:
-   - Open RSLogix 500 and load the provided `.RSS` file.
-   - Download the program to the PLC.
-
-3. **Operation**:
-   - Press the start button to begin the operation.
-   - Place boxes on the conveyor belt with the appropriate labels (red for pecans, blue for walnuts).
-   - Monitor the system and ensure that boxes are correctly filled based on their labels.
-
-## Screenshots
-
-
-![image](https://github.com/user-attachments/assets/9a14d7e8-5e3e-4bef-95b1-ad835c93a5d7)
-
-![image](https://github.com/user-attachments/assets/7a84b526-ebf3-4eaf-83af-0833bc32e413)
-
-![image](https://github.com/user-attachments/assets/d39afe09-070b-44ab-8195-8fe1665dfa22)
-
-![image](https://github.com/user-attachments/assets/151cda0f-fb7c-404c-952c-c05b09fa594b)
-
-![image](https://github.com/user-attachments/assets/cb84daae-9330-4491-8ade-744cd0f71c36)
+4. **System Stop**: Pressing the stop button (I:0/1) resets the `system running` bit (B3:3/2), stopping all operations immediately.
 
